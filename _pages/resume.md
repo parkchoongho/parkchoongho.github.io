@@ -18,4 +18,4 @@ HTTP, TCP와 같은 네트워크 웹 통신 구조도 이해하고 있습니다.
 
 + Backend 사용기술: ![Javascript](/assets/images/javascript.png){: width="50" height="50"} ![NodeJS](/assets/images/nodejs.png){: width="50" height="50"} ![MongoDB](/assets/images/mongoDB.png){: width="60" height="60"} ![Express](/assets/images/express.png){: width="50" height="50"} ![Heroku](/assets/images/heroku.png){: width="50" height="50"} ![AWS S3](/assets/images/aws-s3.png){: width="50" height="50"}
 
-+ Frontend 사용기술: ![React](/assets/images/react.png){: width="50" height="50"}
++ Frontend 사용기술: ![React](/assets/images/react.png){: width="50" height="50"} ![NodeJS](/assets/images/nodejs.png){: width="50" height="50"}
