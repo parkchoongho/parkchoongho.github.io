@@ -27,11 +27,11 @@ HTTP, TCP와 같은 네트워크 웹 통신 구조도 이해하고 있습니다.
 
 동영상을 업로드하고 회원별로 관리할 수 있는 웹사이트입니다. 혼자서 개발한 토이 프로젝트입니다. 기본적인 회원가입, 로그인 기능을 구현했습니다. 동영상 파일을 업로드할 수 있고 업로드되는 파일은 multer로 처리하여 저장했습니다. 데이터베이스에는 비디오파일에 위치가 저장되어있고 웹에서는 이를 참조하는 형태로 영상을 사용자에게 제공합니다. multer로 처리한 영상파일은  AWS S3에 저장했습니다.
 
-+ URL: https://sleepy-pare-6cd65c.netlify.com
++ URL: [https://sleepy-pare-6cd65c.netlify.com](https://sleepy-pare-6cd65c.netlify.com)
 
 + Github Repo
-  + Backend: https://github.com/parkchoongho/wetubeAPI
-  + Frontend: https://github.com/parkchoongho/front-project 
+  + Backend: [https://github.com/parkchoongho/wetubeAPI](https://github.com/parkchoongho/wetubeAPI)
+  + Frontend: [https://github.com/parkchoongho/front-project](https://github.com/parkchoongho/front-project) 
 
 + Backend 사용기술: ![Javascript](/assets/images/javascript.png){: width="50" height="50"} ![NodeJS](/assets/images/nodejs.png){: width="50" height="50"} ![MongoDB](/assets/images/mongoDB.png){: width="60" height="60"} ![Express](/assets/images/express.png){: width="50" height="50"} ![Heroku](/assets/images/heroku.png){: width="50" height="50"} ![AWS S3](/assets/images/aws-s3.png){: width="50" height="50"}
 
