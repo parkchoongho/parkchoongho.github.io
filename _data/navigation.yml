@@ -2,6 +2,10 @@
 main:
   - title: "Home"
     url: https://parkchoongho.github.io
+  - title: "Categories"
+    url: /categories/
+  - title: "Tags"
+    url: /tags/
   - title: "About"
     url: /about/
   - title: "Resume"
