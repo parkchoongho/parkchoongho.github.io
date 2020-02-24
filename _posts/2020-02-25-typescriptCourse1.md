@@ -1,0 +1,422 @@
+---
+title:  "TypeScript Course"
+
+categories:
+  - Posts
+tags:
+  - Typescript
+---
+
+# Getting Started with Typescript
+
+![TypeScript](/assets/images/typescript.png){: width="150" height="150"}
+
+## Typescript Overview
+
+타입스크립트는 기존 자바스크립트에 type system을 얹은 언어입니다. 타입스크립트를 작성한다는 것은 곧 자바스크립트를 작성하는 것과 같습니다. 타입스크립트는 우리가 원하는 자바스크립트로 빌드되며 `.js` 파일을 생성합니다.
+
+그렇다면 앞서 말한 type system은 무엇일까요? 자바스크립트는 type에 크게 의존적이지 않은 언어입니다. 따라서 개발단계에서는 에러를 발생시키지 않지만 실행단계에서 우리가 원하지 않은 에러나 결과를 빈번하게 초래합니다. 이러한 자바스크립트의 단점을 개선한것이 바로 타입스크립트입니다. 타입스크립트는 다음과 같은 특징을 가지고 있습니다.
+
+- 개발 단계에서 에러를 잡을 수 있게 도와줍니다.
+- 컴파일러가 'type annotations'을 활용하여 코드를 분석합니다.
+- Typescript는 개발단계에서만 동작합니다. (자바스크입트 실행환경인 브라우저와 NodeJS는 타입스크립트를 이해할 수 없습니다.)
+- 어떠한 performance optimization도 제공하지 않습니다. (공부하면서 점점 이해할 사안 같습니다.)
+
+=> 종합해서 typescript는 내가 자바스크립트를 작성할 때, 뒤에서 이를 지켜보는 친구라고 생각하면 좋습니다.
+
+## Environment Setup
+
+먼저 typescript를 설치해봅시다.
+
+```powershell
+$ npm install typescript ts-node
+```
+
+typescript는 말그대로 typescript이고 ts-node module은 typescript 빌드 후 자동으로 javascript 파일을 실행해 주는 module입니다.(실제로 compile하고 실행하는 것은 아닙니다.) 자세한 내용은 뒤에서 확인하겠습니다.
+
+```powershell
+$ tsc --help
+```
+
+해당 명령어를 입력해 typescript가 올바르게 작동하는지 확인합니다.
+
+## A First App
+
+첫 typescript app을 만들어봅시다. 이번에는 간단히 network 요청을 보내고 응답으로 받는 json 객체 결과를 프린트 하겠습니다.  먼저 node app을 설치합니다.
+
+```powershell
+$ mkdir fetchjson
+$ cd fetchjson
+$ npm init
+$ npm install axios
+```
+
+이렇게 기본 app 설정을 하고 index.ts 파일을 추가합니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+axios.get(url).then(response => {
+  console.log(response.data);
+});
+```
+
+이렇게 작성하고 tsc명령어로 compile합니다.
+
+```powershell
+$ tsc index.ts
+```
+
+아무일도 일어나지 않은 것 같지만 index.js 파일이 생성됩니다.
+
+index.js
+
+```javascript
+"use strict";
+exports.__esModule = true;
+var axios_1 = require("axios");
+var url = "https://jsonplaceholder.typicode.com/todos/1";
+axios_1["default"].get(url).then(function (response) {
+    console.log(response.data);
+});
+```
+
+해당 자바스크립트 파일을 실행해봅니다.
+
+```powershell
+$ node index.js
+{ userId: 1, id: 1, title: 'delectus aut autem', completed: false }
+```
+
+이렇게 매번 compile과 실행을 따로 하기는 매우 귀찮습니다. 따라서 아까 설치한 ts-node module을 활용합니다.
+
+```powershell
+$ ts-node index.js
+{ userId: 1, id: 1, title: 'delectus aut autem', completed: false }
+```
+
+typescript compile +  자바스크립트 파일 실행 결과를 한번에 보여줍니다.
+
+## Catching errors with Typescript
+
+index.ts code를 아래와 같이 바꿔보겠습니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+axios.get(url).then(response => {
+  const todo = response.data;
+
+  const id = todo.ID;
+  const title = todo.Title;
+  const finished = todo.finished;
+
+  console.log(`
+    The Todo with ID: ${id}
+    Has a title of: ${title}
+    Is it finished? ${finished}
+  `);
+});
+```
+
+그 다음, 코드를 실행합니다.
+
+```powershell
+$ ts-node index.ts
+	The Todo with ID: undefined
+    Has a title of: undefined  
+    Is it finished? undefined 
+```
+
+아까는 잘 확인되던 값들이 지금은 undefined가 되어 나타납니다. 무슨 이유일까요?
+
+우리가 받는 JSON file을 확인해보면 이렇게 구성됩니다.
+
+```json
+// 20200224235923
+// https://jsonplaceholder.typicode.com/todos/1
+
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
+```
+
+id, title, completed를 ID, Title, finished로 잘 못 받아 이런 결과가 나타나게 되었습니다. 하지만 자바스크립트는 이러한 에러를 개발단계에서 잡아내지 못하고 실행해야만 알 수 있습니다. index.ts 코드를 바꿔 이를 개발단계에서 잡아보도록 합니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+axios.get(url).then(response => {
+  const todo = response.data as Todo;
+
+  const id = todo.ID;
+  const title = todo.Title;
+  const finished = todo.finished;
+
+  console.log(`
+    The Todo with ID: ${id}
+    Has a title of: ${title}
+    Is it finished? ${finished}
+  `);
+});
+```
+
+interface는 객체 구조를 결정하는데 사용되는 typescript 문법입니다. Todo interface에 id는 number, title은 string, completed는 boolean으로 명시합니다. 이 코드를 complie합니다.
+
+```powershell
+$ ts-node index.ts
+
+C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:421
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+index.ts:14:19 - error TS2551: Property 'ID' does not exist on type 'Todo'. Did you mean 'id'?
+
+14   const id = todo.ID;
+                     ~~
+
+  index.ts:6:3
+    6   id: number;
+        ~~
+    'id' is declared here.
+index.ts:15:22 - error TS2551: Property 'Title' does not exist on type 'Todo'. Did you mean 'title'?
+
+15   const title = todo.Title;
+                        ~~~~~
+
+  index.ts:7:3
+    7   title: string;
+        ~~~~~
+    'title' is declared here.
+index.ts:16:25 - error TS2339: Property 'finished' does not exist on type 'Todo'.
+
+16   const finished = todo.finished;
+                           ~~~~~~~~
+
+    at createTSError (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:421:12)
+    at reportTSError (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:425:19)
+    at getOutput (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:530:36)
+    at Object.compile (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:735:32)
+    at Module.m._compile (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:814:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:995:10)
+    at Object.require.extensions.<computed> [as .ts] (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:817:12)
+    at Module.load (internal/modules/cjs/loader.js:815:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:727:14)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:1047:10)
+```
+
+이렇게 에러가 발생합니다. 이렇게 typescript는 개발단계에서 에러를 발생시켜 더 효율적으로 개발할 수 있게 도와줍니다.
+
+이제 코드가 올바르게 작동되도록, index.ts 파일을 수정합니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+axios.get(url).then(response => {
+  const todo = response.data as Todo;
+
+  const id = todo.id;
+  const title = todo.title;
+  const completed = todo.completed;
+
+  console.log(`
+    The Todo with ID: ${id}
+    Has a title of: ${title}
+    Is it completed? ${completed}
+  `);
+});
+```
+
+그리고 실행합니다.
+
+```powershell
+$ ts-node index.ts
+
+	The Todo with ID: 1
+    Has a title of: delectus aut autem
+    Is it completed? false
+```
+
+올바르게 동작하는 것을 확인할 수 있습니다.
+
+이번에는 다른 에러가 발생하게끔 코드를 변경해 보겠습니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const logTodo = (id, title, completed) => {
+  console.log(`
+  The Todo with ID: ${id}
+  Has a title of: ${title}
+  Is it completed? ${completed}
+`);
+};
+
+axios.get(url).then(response => {
+  const todo = response.data as Todo;
+
+  const id = todo.id;
+  const title = todo.title;
+  const completed = todo.completed;
+
+  logTodo(id, completed, title);
+});
+```
+
+```powershell
+$ ts-node index.ts
+
+  The Todo with ID: 1
+  Has a title of: false
+  Is it completed? delectus aut autem
+```
+
+이번에는 title과 completed가 뒤바뀐 결과가 나타났습니다. `logTodo(id, completed, title)` 를 보시면 completed와 title을 반대로 입력했습니다. 개발단계에서 이를 막아 보겠습니다.
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const logTodo = (id: number, title: string, completed: boolean) => {
+  console.log(`
+  The Todo with ID: ${id}
+  Has a title of: ${title}
+  Is it completed? ${completed}
+`);
+};
+
+axios.get(url).then(response => {
+  const todo = response.data as Todo;
+
+  const id = todo.id;
+  const title = todo.title;
+  const completed = todo.completed;
+
+  logTodo(id, completed, title);
+});
+```
+
+type annotation을 추가합니다. type annotation은 해당 parameter나 변수가 어떤 data type을 가져야하는지 명시하는 것을 뜻합니다.
+
+다시 코드를 실행합니다.
+
+```powershell
+$ ts-node index.ts
+
+C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:421
+    return new TSError(diagnosticText, diagnosticCodes)
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+index.ts:26:15 - error TS2345: Argument of type 'boolean' is not assignable to parameter of type 'string'.
+
+26   logTodo(id, completed, title);
+                 ~~~~~~~~~
+
+    at createTSError (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:421:12)
+    at reportTSError (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:425:19)
+    at getOutput (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:530:36)
+    at Object.compile (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:735:32)
+    at Module.m._compile (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:814:43)
+    at Module._extensions..js (internal/modules/cjs/loader.js:995:10)
+    at Object.require.extensions.<computed> [as .ts] (C:\Users\User\AppData\Roaming\npm\node_modules\ts-node\src\index.ts:817:12)
+    at Module.load (internal/modules/cjs/loader.js:815:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:727:14)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:1047:10)
+```
+
+이렇게 string type을 가진 argument가 올자리에 boolean type을 가진 argument를 넣었다고 경고하고 있습니다.
+
+코드를 수정합니다.
+
+index.ts
+
+```typescript
+import axios from "axios";
+
+const url = "https://jsonplaceholder.typicode.com/todos/1";
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const logTodo = (id: number, title: string, completed: boolean) => {
+  console.log(`
+  The Todo with ID: ${id}
+  Has a title of: ${title}
+  Is it completed? ${completed}
+`);
+};
+
+axios.get(url).then(response => {
+  const todo = response.data as Todo;
+
+  const id = todo.id;
+  const title = todo.title;
+  const completed = todo.completed;
+
+  logTodo(id, title, completed);
+});
+```
+
+```powershell
+$ ts-node index.ts
+
+  The Todo with ID: 1
+  Has a title of: delectus aut autem
+  Is it completed? false
+```
+
+코드가 올바르게 작동하는 것을 볼 수 있습니다.
+
+Tip: 사실 ts-node 명령어는 typescript를 compile하지 않습니다. ts-node는 개발단계에서 typescript로 작성된 javascript 코드가 제대로 작동하는지 확인하는 명령어이고 typescript를 javascript로 compile하기 위해서는 `tsc` 명령어를 사용해야 합니다.	 
+
