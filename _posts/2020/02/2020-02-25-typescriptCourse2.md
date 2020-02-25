@@ -1,0 +1,34 @@
+---
+title:  "TypeScript Course2"
+
+categories:
+  - Posts
+tags:
+  - Typescript
+---
+
+# Type System
+
+## Types
+
+타입이란 어떤 value 값이 가질 수 있는 서로 다른 properties나 functions들을 나타내는 쉬운 방법입니다.  string, number, object 등등 자바스크립트에는 여러가지 타입이 존재하고 이를 통해 변수에 할당되어 있는 값을 구분할 수 있습니다.
+
+"red" => string or a value that has all properties + methods that we assume that a string has
+
+Typescript에서 interface를 생성하는 것은 새로운 type을 생성하는 것과 마찬가지라 보시면 됩니다.
+
+```typescript
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+```
+
+![Types](/assets/images/2020/02/types.png)
+
+Types에는 위 그림과 같은 종류들이 있습니다. 크게 primitive와 object로 나뉘어지고 primitive는 7가지, object는 4가지로 구성됩니다.
+
+## Why do we care about types?
+
+ Types는 타입스크립트 컴파일러가 우리 코드의 에러를 분석할 때 사용되어집니다. Types는 또한 우리의 codebase가 어떠한 value 흐름을 가지는지 다른 개발자가 알아보기 쉽게 도와줍니다.

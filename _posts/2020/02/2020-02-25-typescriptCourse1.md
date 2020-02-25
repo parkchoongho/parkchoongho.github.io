@@ -1,5 +1,5 @@
 ---
-title:  "TypeScript Course"
+title:  "TypeScript Course1"
 
 categories:
   - Posts
